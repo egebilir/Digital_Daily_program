@@ -1,0 +1,29 @@
+{
+  "name": "cruise-daily-program",
+  "version": "1.0.0",
+  "description": "Cruise Ship Daily Program Management System",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "multer": "^1.4.5-lts.1",
+    "bcryptjs": "^2.4.3",
+    "express-session": "^1.17.3",
+    "qrcode": "^1.5.3",
+    "path": "^0.12.7",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["cruise", "daily-program", "qr-code", "admin"],
+  "author": "",
+  "license": "MIT"
+} 
