@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cruise Daily Program</title>
+    <title>Gemini Daily Program - Miray Cruises</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -205,8 +205,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-ship"></i> Cruise Daily Program</h1>
-            <p>Your daily activities and entertainment schedule</p>
+            <h1><i class="fas fa-ship"></i> Gemini Daily Program</h1>
+            <p>Miray Cruises - Your daily activities and entertainment schedule</p>
         </div>
         
         <div class="content">
@@ -259,6 +259,9 @@
             const cardClass = isAvailable ? 'language-card available' : 'language-card unavailable';
             const status = isAvailable ? 'Available' : 'Not Available';
             
+            // Convert backslashes to forward slashes and escape for HTML
+            const escapedFilePath = isAvailable ? program.file_path.replace(/\\/g, '/').replace(/'/g, "\\'") : '';
+            
             return `
                 <div class="${cardClass}">
                     <div class="language-icon">
@@ -267,7 +270,7 @@
                     <div class="language-name">${languages[language].name}</div>
                     <div class="language-status">${status}</div>
                     ${isAvailable ? 
-                        `<button class="view-btn" onclick="viewProgram('${program.file_path}', '${program.file_type}')">
+                        `<button class="view-btn" onclick="viewProgram('${escapedFilePath}', '${program.file_type}')">
                             <i class="fas fa-eye"></i> View Program
                         </button>` : 
                         `<button class="view-btn" disabled>

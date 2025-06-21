@@ -47,28 +47,41 @@ function requireAuth(req, res, next) {
 
 // Admin login
 router.post('/admin/login', async (req, res) => {
+    console.log('Login attempt received');
     const { username, password } = req.body;
+    
+    console.log('Login credentials:', { username, password: password ? '***' : 'undefined' });
     
     try {
         db.get('SELECT * FROM admin_users WHERE username = ?', [username], async (err, user) => {
             if (err) {
+                console.log('Database error during login:', err);
                 return res.status(500).json({ error: 'Database error' });
             }
             
+            console.log('User found:', user ? 'Yes' : 'No');
+            
             if (!user) {
+                console.log('Invalid credentials - user not found');
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
             
             const isValidPassword = await bcrypt.compare(password, user.password);
+            console.log('Password valid:', isValidPassword);
+            
             if (!isValidPassword) {
+                console.log('Invalid credentials - wrong password');
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
             
             req.session.authenticated = true;
             req.session.userId = user.id;
+            console.log('Session created:', req.session);
+            console.log('Login successful for user:', username);
             res.json({ success: true, message: 'Login successful' });
         });
     } catch (error) {
+        console.log('Login error:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

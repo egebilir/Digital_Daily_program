@@ -1,6 +1,6 @@
-# Cruise Daily Program Management System
+# Miray Cruises - Gemini Daily Program Management System
 
-A web application for managing and displaying daily programs for cruise ships. End users can scan a QR code to access daily programs, while administrators can upload and manage program files in multiple languages.
+A web application for managing and displaying daily programs for Miray Cruises' Gemini ship. End users can scan a QR code to access daily programs, while administrators can upload and manage program files in multiple languages.
 
 ## Features
 
