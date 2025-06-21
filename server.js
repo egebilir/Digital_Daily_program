@@ -9,9 +9,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
+const uploadsDir = process.env.NODE_ENV === 'production' 
+    ? path.join(process.cwd(), 'uploads')
+    : path.join(__dirname, 'uploads');
+
+console.log('Uploads directory:', uploadsDir);
+
+try {
+    if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+        console.log('Uploads directory created');
+    } else {
+        console.log('Uploads directory already exists');
+    }
+} catch (error) {
+    console.error('Error creating uploads directory:', error);
 }
 
 // Middleware
@@ -95,6 +107,15 @@ function requireAuth(req, res, next) {
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+    });
 });
 
 // Admin login page

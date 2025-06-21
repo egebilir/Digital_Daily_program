@@ -2,13 +2,26 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
-// Create database connection
-const dbPath = path.join(__dirname, 'cruise_programs.db');
-const db = new sqlite3.Database(dbPath);
+// Create database connection - use absolute path for Render
+const dbPath = process.env.NODE_ENV === 'production' 
+    ? path.join(process.cwd(), 'cruise_programs.db')
+    : path.join(__dirname, 'cruise_programs.db');
+
+console.log('Database path:', dbPath);
+
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Error opening database:', err);
+    } else {
+        console.log('Database connected successfully');
+    }
+});
 
 // Initialize database tables
 function initializeDatabase() {
     return new Promise((resolve, reject) => {
+        console.log('Initializing database...');
+        
         // Create admin users table
         db.run(`
             CREATE TABLE IF NOT EXISTS admin_users (
@@ -23,6 +36,8 @@ function initializeDatabase() {
                 reject(err);
                 return;
             }
+            
+            console.log('Admin users table created/verified');
             
             // Create daily programs table
             db.run(`
@@ -41,6 +56,8 @@ function initializeDatabase() {
                     reject(err);
                     return;
                 }
+                
+                console.log('Daily programs table created/verified');
                 
                 // Create default admin user if not exists
                 createDefaultAdmin().then(() => {
@@ -61,6 +78,7 @@ async function createDefaultAdmin() {
         // Check if admin user already exists
         db.get('SELECT id FROM admin_users WHERE username = ?', [defaultUsername], (err, row) => {
             if (err) {
+                console.error('Error checking admin user:', err);
                 reject(err);
                 return;
             }
@@ -69,6 +87,7 @@ async function createDefaultAdmin() {
                 // Create default admin user
                 bcrypt.hash(defaultPassword, 10, (err, hash) => {
                     if (err) {
+                        console.error('Error hashing password:', err);
                         reject(err);
                         return;
                     }
@@ -76,6 +95,7 @@ async function createDefaultAdmin() {
                     db.run('INSERT INTO admin_users (username, password) VALUES (?, ?)', 
                         [defaultUsername, hash], (err) => {
                         if (err) {
+                            console.error('Error creating admin user:', err);
                             reject(err);
                             return;
                         }
@@ -84,6 +104,7 @@ async function createDefaultAdmin() {
                     });
                 });
             } else {
+                console.log('Admin user already exists');
                 resolve();
             }
         });
